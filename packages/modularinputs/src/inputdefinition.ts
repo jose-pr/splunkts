@@ -1,4 +1,5 @@
-import { XMLSerializer } from "./common";
+import { XMLSerializer } from "./utils";
+import { DefinitionMeta, ConfigurationXmlObject, CloneDefintionMeta, Stanza, GetParameters } from "./definition";
 
 /**
 * @example
@@ -31,32 +32,21 @@ import { XMLSerializer } from "./common";
 *   `</configuration>`
 * `</input>`
 */
-export interface InputDefiniionXmlObject {
-    server_host: string;
-    server_uri: string;
-    checkpoint_dir: string;
-    session_key: string;
-    configuration: {
-        stanza: {
-            '@_name': string
-            param?: { '@_name': string, '#text': string }[]
-            param_list?: { '@_name': string, value: string[] }[]
-        }[]
-    }
+export interface InputDefinitionXmlObject {
+    input: InputXmlObject;
+}
+
+export interface InputXmlObject extends DefinitionMeta {
+    configuration: ConfigurationXmlObject
 }
 
 /**
 * `InputDefinition` encodes the XML defining inputs that Splunk passes to
 * a modular input script.
 */
-export class InputDefinition {
-    inputs: Record<string, Record<string, string | string[]>>
-    metadata: {
-        server_host: string;
-        server_uri: string;
-        checkpoint_dir: string;
-        session_key: string;
-    }
+export class InputDefinition<Conf extends Stanza> {
+    inputs: Record<string,Conf>
+    metadata: DefinitionMeta
     /**
     * @example
     *
@@ -77,22 +67,13 @@ export class InputDefinition {
     * @param str A string  containing XML to parse.
     * @return An InputDefiniion object.
     */
-    static parse(str: string): InputDefinition {
-        const obj = XMLSerializer.deserialize(str) as { input: InputDefiniionXmlObject };
-        const inputs = new InputDefinition();
-        inputs.metadata.checkpoint_dir = obj.input.checkpoint_dir;
-        inputs.metadata.server_host = obj.input.server_host;
-        inputs.metadata.server_uri = obj.input.server_uri;
-        inputs.metadata.session_key = obj.input.session_key;
+    static parse<Conf extends Stanza>(str: string): InputDefinition<Conf> {
+        const obj = XMLSerializer.deserialize(str) as InputDefinitionXmlObject;
+        const inputs = new InputDefinition<Conf>();
+        inputs.metadata = CloneDefintionMeta(obj.input);
 
         for (let stanza of obj.input.configuration.stanza) {
-            const conf:Record<string,string|string[]> = inputs.inputs[stanza["@_name"]] = {};
-            for (let param of stanza.param ?? []) {
-                conf[param["@_name"]] = param["#text"]
-            }
-            for (let param of stanza.param_list ?? []) {
-                conf[param["@_name"]] = param.value
-            }
+            inputs.inputs[stanza["@_name"]] = GetParameters<Conf>(stanza);
         }
         return inputs;
     }

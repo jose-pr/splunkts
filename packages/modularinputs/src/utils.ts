@@ -1,14 +1,11 @@
 import { J2xOptionsOptional, j2xParser, parse } from "fast-xml-parser"
 
-export const XMLParserOptions: J2xOptionsOptional = {
+const XMLParserOptions: J2xOptionsOptional = {
     attributeNamePrefix: "@_",
     textNodeName: "#text",
     ignoreAttributes: false,
 };
 
-export function IsNumeric(val: unknown): val is number {
-    return !isNaN(val as number);
-}
 const toXml = new j2xParser(XMLParserOptions);
 export const XMLSerializer = {
     serialize(obj: any) {
@@ -56,3 +53,27 @@ export function GetSplunkFormattedTime(time: string | number | Date): string {
     }
     return (_time / 1000).toFixed(3);
 };
+export function Wait(ms: number, cancellationToken?: Promise<void>) {
+    return new Promise((done, reject) => {
+        const timer = setTimeout(done, 30500);
+        cancellationToken?.then(() => clearTimeout(timer));
+    });
+}
+export async function ReadXmlObjectFromStream(tag: string, stream: NodeJS.ReadableStream): Promise<string> {
+    return new Promise((resolve, reject) => {
+        let data = Buffer.alloc(0);
+        const timer = setTimeout(function () {
+            reject(new Error(`Receiving ${tag} object.`));
+        }, 30500);
+        stream.on("data", async function (chunk) {
+            // Chunk will be a Buffer when interacting with Splunk.
+            data = Buffer.concat([data, chunk]);
+            // Remove any trailing whitespace.
+            let bufferString = data.toString("utf8", 0, data.length).trim();
+            if (bufferString.endsWith(`</${tag}>`)) {
+                clearTimeout(timer);
+                resolve(bufferString);
+            }
+        });
+    });
+}

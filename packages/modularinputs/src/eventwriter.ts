@@ -1,6 +1,7 @@
 import { Event } from "./event"
 import { stderr, stdout } from "process"
-import { XMLSerializer } from "./common"
+import { XMLSerializer } from "./utils"
+import { Logger } from "./logger"
 
 
 /**
@@ -11,14 +12,14 @@ import { XMLSerializer } from "./common"
 
  */
 export class EventWriter {
-    private _out:NodeJS.WriteStream
-    private _err:NodeJS.WriteStream
-    private _headerWritten:boolean = false
+    readonly _out: NodeJS.WriteStream
+    readonly _err: NodeJS.WriteStream
+    private _headerWritten: boolean = false
     /**
      * @param output A stream to output data, defaults to `process.stdout`
      * @param error  A stream to output errors, defaults to `process.stderr`
      */
-    constructor(output: NodeJS.WriteStream|undefined, error: NodeJS.WriteStream|undefined) {
+    constructor(output: NodeJS.WriteStream | undefined, error: NodeJS.WriteStream | undefined) {
         this._err = error ?? stderr
         this._out = output ?? stdout
     }
@@ -28,7 +29,7 @@ export class EventWriter {
     *
     * @param event An `Event` Object.
     */
-    writeEvent(event: Event<any>){
+    writeEvent(event: Event<any>) {
         if (!this._headerWritten) {
             this._out.write("<stream>");
             this._headerWritten = true;
@@ -38,7 +39,7 @@ export class EventWriter {
             this._out.write(evtXml);
         }
         catch (e) {
-       //     Logger.error("", e.message, this._err);
+            Logger.error("", e.message, this._err);
             throw e;
         }
     }
@@ -52,15 +53,23 @@ export class EventWriter {
     *
     * @param xmlObject An XmlObject representing an XML document.
     */
-    writeXMLDocument(xmlObject: {}):void{
-        const xmlString = XMLSerializer.serialize(xmlObject);
-        this._out.write(xmlString);
+    async writeXMLDocument(xmlObject: {}): Promise<void> {
+        return new Promise((r, e) => {
+            const xmlString = XMLSerializer.serialize(xmlObject);
+            this._out.write(xmlString,(err)=>{
+                if(err) e(e);
+                else r();
+            });
+        });
     }
     /**
     * Writes the closing </stream> tag to make the XML well formed.
     *
     */
-    close(): void{
-        this._out.write("</stream>");
+    close(): void {
+        if (this._headerWritten) {
+            this._out.write("</stream>");
+            this._headerWritten = false;
+        }
     }
 }

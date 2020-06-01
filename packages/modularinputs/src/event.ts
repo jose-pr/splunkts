@@ -1,4 +1,4 @@
-import { GetSplunkFormattedTime } from "./common"
+import { GetSplunkFormattedTime } from "./utils"
 
 /**
  * `Event Configuration for Event Constructor`

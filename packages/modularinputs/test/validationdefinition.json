@@ -1,0 +1,23 @@
+{
+    "items": {
+        "server_host": "myHost",
+        "server_uri": "https://127.0.0.1:8089",
+        "session_key": 123102983109283020000,
+        "checkpoint_dir": "/opt/splunk/var/lib/splunk/modinputs",
+        "item": {
+            "@_name": "myScheme",
+            "param": {
+                "#text": "value1",
+                "@_name": "param1"
+            },
+            "param_list": {
+                "@_name": "param2",
+                "value": [
+                    "value2",
+                    "value3",
+                    "value4"
+                ]
+            }
+        }
+    }
+}
