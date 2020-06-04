@@ -34,7 +34,7 @@ export interface Scheme<Conf extends Stanza> {
      */
     endpoint: {
         args: {
-            arg: ArgumentDefinition<Exclude<keyof Conf, symbol | number>, any>[]
+            arg: ArgumentDefinition<Exclude<keyof Conf, symbol | number>, Conf>[]
         }
     }
 

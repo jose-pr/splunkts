@@ -7,7 +7,7 @@ import { streamEvents } from './commands/streamevents';
 import { XmlStream } from './utils/xml_stream';
 import { Scheme, ArgumentType, Stanza, SendEvent } from './models';
 import { Logger } from "./utils/logger";
-import { LOGGER_LEVELS } from './logger';
+import { LOGGER_LEVELS, SplunkLogger } from './logger';
 
 export async function main<T extends Stanza>(modularInputType: ModularInputConstructor<T>) {
     // In order to ensure that everything that is written to stdout/stderr is flushed before we exit,
@@ -25,7 +25,7 @@ export async function main<T extends Stanza>(modularInputType: ModularInputConst
         createWriteStream('out/error.txt') as NodeJS.WritableStream
     ];
 
-    const LOGGER = new Logger('Modular Inputs', { stream: stream_error })
+    const LOGGER = new Logger('Modular Inputs', { stream: stream_error }).getSeverityLogger<LOGGER_LEVELS>(Object.keys(LOGGER_LEVELS) as any)
     await new Promise((r) => stream_out.once('open', r));
     try {
         const stream = new XmlStream({ input: stream_in, output: stream_out, error: stream_error });
@@ -48,11 +48,11 @@ export async function main<T extends Stanza>(modularInputType: ModularInputConst
         exit(1);
     }
 }
-class ExampleClass extends ModularInput<{ test: '1' }>{
-    static async create(logger: Logger<LOGGER_LEVELS>): Promise<ExampleClass> {
+class ExampleClass extends ModularInput<{ test: number }>{
+    static async create(logger: SplunkLogger): Promise<ExampleClass> {
         return await new ExampleClass(logger);
     }
-    getScheme(): Scheme<{ test: '1' }> {
+    getScheme(): Scheme<{ test: number }> {
         return {
             title: 'test',
             endpoint: {
@@ -69,7 +69,7 @@ class ExampleClass extends ModularInput<{ test: '1' }>{
         }
     }
     async streamEvents(name: string, input: any, writer: SendEvent): Promise<void> {
-        this.logger.log(LOGGER_LEVELS.INFO, 'name', 'test')
+        this.logger.INFO('name', 'test')
         await writer(name, { data: '123' }, true)
     }
 

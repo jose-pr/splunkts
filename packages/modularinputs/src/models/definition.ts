@@ -27,9 +27,9 @@ export interface ParamXmlObject {
 export interface ConfigurationXmlObject {
     stanza: StanzaXmlObject[];
 }
-
+export type ValidArgumentType = number | string | boolean
 export type Stanza = {
-    [name: string]: string | string[] | undefined
+    [name: string]: ValidArgumentType | ValidArgumentType[] | undefined
 }
 /**
 * `InputDefinition` encodes the XML defining inputs that Splunk passes to

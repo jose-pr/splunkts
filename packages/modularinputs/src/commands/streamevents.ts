@@ -1,9 +1,6 @@
 import { GetInputMeta, InputDefinition, GetInputConf, Event, normalizeEvent, _InternalEvent, Stanza } from "../models";
 import { XmlStream } from "../utils/xml_stream";
 import { ModularInput } from "../modularinput";
-import { LOGGER_LEVELS } from "../logger";
-
-
 
 export async function streamEvents<T extends Stanza>(xmlstream: XmlStream, input: ModularInput<T>) {
     const def = await xmlstream.readObject<InputDefinition>('input')
@@ -27,7 +24,7 @@ export async function streamEvents<T extends Stanza>(xmlstream: XmlStream, input
             await xmlstream.writeObject({ event: _event })
         }
         catch (e) {
-            input.logger.log(LOGGER_LEVELS.ERROR,"StreamEvents", e.message)
+            input.logger.ERROR("StreamEvents", e.message)
             throw e;
         }
     }

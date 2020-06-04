@@ -1,7 +1,6 @@
 import { Scheme, SendEvent } from "./models";
 import { Stanza, DefinitionMeta } from "./models/definition";
-import { Logger } from "./utils/logger";
-import { LOGGER_LEVELS } from "./logger";
+import { SplunkLogger } from "./logger";
 
 export type StepResult = [Error | undefined, 0 | 1]
 
@@ -10,7 +9,7 @@ export interface ModulaInputConstructor<Conf extends Stanza = Stanza> {
     /**
     * Runs before streaming begins.
     */
-    create(logger:Logger<LOGGER_LEVELS>): Promise<ModularInput<Conf>>
+    create(logger: SplunkLogger): Promise<ModularInput<Conf>>
 }
 
 /**
@@ -26,9 +25,9 @@ export interface ModulaInputConstructor<Conf extends Stanza = Stanza> {
 export abstract class ModularInput<Conf extends Stanza = Stanza> {
     protected meta!: DefinitionMeta
     private _inputs!: Record<string, Conf>
-    readonly logger: Logger<LOGGER_LEVELS>
+    readonly logger: SplunkLogger
 
-    constructor(logger:Logger<LOGGER_LEVELS>){
+    constructor(logger: SplunkLogger) {
         this.logger = logger;
     }
 

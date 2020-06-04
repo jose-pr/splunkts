@@ -1,9 +1,4 @@
-/**
- * 
- * 
- */
-
-import { NamedDefinition } from "./definition"
+import { NamedDefinition, Stanza } from "./definition"
 import { setProp } from "../utils"
 
 /**
@@ -31,7 +26,7 @@ export const enum ArgumentType {
 * }
 *
 */
-export interface ArgumentDefinition<N extends string, T extends ArgumentType = ArgumentType.dataTypeString> extends NamedDefinition<N> {
+export type ArgumentDefinition<N extends Exclude<keyof Conf, symbol | number>, Conf extends Stanza> = NamedDefinition<N> & {
     /**Provides a label for the parameter.*/
     title?: string
     /**Provides a description of the parameter.*/
@@ -49,18 +44,17 @@ export interface ArgumentDefinition<N extends string, T extends ArgumentType = A
      *is_pos_int(param)         //Is the value a positive integer.
     */
     validation?: string
-    /**Properly define the datatype for the streamed data. Default datatype is string.*/
-    data_type?: T
     /**Indicates whether the parameter is required for edit. Default behavior is that arguments for edit are optional. Set this to true to override this behavior, and make the parameter required.*/
     required_on_edit?: boolean
     /**Indicates whether the parameter is required for create. Default behavior is that arguments for create are required. Set this to false to override this behavior, and make the parameter optional.*/
     required_on_create?: boolean
-}
+} & (Conf[N] extends number ? { data_type: ArgumentType.dataTypeNumber } : Conf[N] extends boolean ? { data_type: ArgumentType.dataTypeBoolean } : { data_type?: ArgumentType.dataTypeString })
 
-export function normalizeArgument<N extends string, T extends ArgumentType>(arg: ArgumentDefinition<N, T>): ArgumentDefinition<N, T> {
+
+export function normalizeArgument<N extends Exclude<keyof Conf, symbol | number>, Conf extends Stanza>(arg: ArgumentDefinition<N, Conf>): ArgumentDefinition<N, Conf> {
     return {
         "@name": arg["@name"],
-        ...setProp(arg, 'data_type'),
+        ...setProp(arg, 'data_type') as any,
         ...setProp(arg, 'description'),
         ...setProp(arg, 'required_on_create'),
         ...setProp(arg, 'required_on_edit'),
