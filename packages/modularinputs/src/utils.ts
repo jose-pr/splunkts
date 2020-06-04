@@ -39,9 +39,3 @@ export function GetSplunkFormattedTime(time: string | number | Date): string {
     }
     return (_time / 1000).toFixed(3);
 };
-export function Wait(ms: number, cancellationToken?: Promise<void>) {
-    return new Promise((done, reject) => {
-        const timer = setTimeout(done, 30500);
-        cancellationToken?.then(() => clearTimeout(timer));
-    });
-}

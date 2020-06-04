@@ -5,7 +5,6 @@ const XMLParserOptions: J2xOptionsOptional = {
     attributeNamePrefix: "@",
     textNodeName: "#text",
     ignoreAttributes: false,
-    supressEmptyNode: true
 };
 
 const toXml = new j2xParser(XMLParserOptions);
@@ -55,7 +54,6 @@ export class XmlStream {
     */
     async writeObject(xmlObject: {}): Promise<void> {
         const xmlString = XMLSerializer.serialize(xmlObject);
-        console.log(xmlString)
         await this.writeString(xmlString);
     }
     async writeString(str: string): Promise<void> {

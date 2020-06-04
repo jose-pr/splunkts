@@ -66,7 +66,7 @@ export abstract class ModularInput<Conf extends Stanza = Stanza> {
      * Provide Scheme to Splunk to build guis.
      */
     abstract getScheme(): Scheme<Conf>
-    validateInput?(input: Conf, meta: DefinitionMeta): Promise<void>
+    validateInput?(input: Conf): Promise<void>
     /**
      * 
      * @param name 

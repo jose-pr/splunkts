@@ -48,7 +48,10 @@ export type ArgumentDefinition<N extends Exclude<keyof Conf, symbol | number>, C
     required_on_edit?: boolean
     /**Indicates whether the parameter is required for create. Default behavior is that arguments for create are required. Set this to false to override this behavior, and make the parameter optional.*/
     required_on_create?: boolean
-} & (Conf[N] extends number ? { data_type: ArgumentType.dataTypeNumber } : Conf[N] extends boolean ? { data_type: ArgumentType.dataTypeBoolean } : { data_type?: ArgumentType.dataTypeString })
+} & (
+        (Conf[N] extends number ? { data_type: ArgumentType.dataTypeNumber } : Conf[N] extends boolean ? { data_type: ArgumentType.dataTypeBoolean } : Conf[N] extends string ? { data_type?: ArgumentType.dataTypeString } : never) |
+        (Conf[N] extends number[] ? { list_delimiter: string, data_type: ArgumentType.dataTypeNumber } : Conf[N] extends boolean[] ? { list_delimiter: string, data_type: ArgumentType.dataTypeBoolean } : Conf[N] extends string[] ? { list_delimiter: string, data_type?: ArgumentType.dataTypeString } : never)
+    )
 
 
 export function normalizeArgument<N extends Exclude<keyof Conf, symbol | number>, Conf extends Stanza>(arg: ArgumentDefinition<N, Conf>): ArgumentDefinition<N, Conf> {
