@@ -5,6 +5,12 @@
       "moduleResolution": "node",
       "rootDir": "src",
       "outDir": "lib",
+      "declarationDir": "@types",
       "declaration": true,
-    }
+      "inlineSourceMap": true,
+      "sourceMap": false,
+      "declarationMap": true
+    },
+    "include": ["src/**/*"],
+    "exclude": ["node_modules"]
   }

@@ -2,3 +2,7 @@
 /pnpm-lock.yaml
 node_modules
 **.js
+/packages/modularinputs/lib
+/packages/modularinputs/@types
+/packages/modularinputs/out
+/packages/modularinputs/doc

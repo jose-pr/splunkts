@@ -1,0 +1,27 @@
+<scheme>
+    <title>Amazon S3</title>
+    <description>Get data from Amazon S3.</description>
+    <use_external_validation>true</use_external_validation>
+    <streaming_mode>xml</streaming_mode>
+    <endpoint>
+        <args>
+            <arg name="name">
+                <title>Resource name</title>
+                <description>An S3 resource name without the leading s3://.  
+                   For example, for s3://bucket/file.txt specify bucket/file.txt.  
+                   You can also monitor a whole bucket (for example by specifying 'bucket'),
+                   or files within a sub-directory of a bucket
+                   (for example 'bucket/some/directory/'; note the trailing slash).
+                </description>
+            </arg>
+            <arg name="key_id">
+                <title>Key ID</title>
+                <description>Your Amazon key ID.</description>
+            </arg>
+            <arg name="secret_key">
+                <title>Secret key</title>
+                <description>Your Amazon secret key.</description>
+            </arg>
+        </args>
+    </endpoint>
+</scheme>
