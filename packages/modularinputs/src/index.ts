@@ -23,7 +23,7 @@ export async function main<T extends Stanza>(modularInputType: ModularInputConst
 
                 [stream_out, stream_error].forEach(function (s: any) {
                     if (s && s.isTTY && s._handle && s._handle.setBlocking) {
-                        s._handle.setBlocking(true);
+                 //       s._handle.setBlocking(true);
                     }
                 });
 

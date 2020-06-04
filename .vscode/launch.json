@@ -15,12 +15,13 @@
             "cwd": "${workspaceFolder}\\packages\\modularinputs",
             "program": "${workspaceFolder}\\packages\\modularinputs\\lib\\index.js",
             "args": [
-                "streamevents",
+                "--in",
                 "test/inputdefinition.xml",
-                "out/out.xml",
+                //   "--out", "out/out.xml",
+                "--error",
                 "out/error.txt"
-                
             ],
+            "outputCapture": "std",
             "outFiles": [
                 "${workspaceFolder}/**/*.js"
             ]

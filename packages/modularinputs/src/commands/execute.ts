@@ -3,6 +3,7 @@ import { XmlStream } from "../utils/xml_stream";
 import { ModularInput } from "../modularinput";
 
 async function streamEvents<T extends Stanza>(xmlstream: XmlStream, input: ModularInput<T>) {
+    input.logger.INFO("test","123")
     const def = await xmlstream.readObject<InputDefinition>('input')
     const meta = GetInputMeta(def);
     const stanzas = def.configuration.stanza.reduce((p, s) => {
@@ -38,7 +39,6 @@ export const ExecuteModularInput = {
         sywac.strict(false)
     },
     run: async (argv: any) => {
-        console.log("streaming events")
         const input = await argv.inputType.create(argv.logger) as ModularInput<Stanza>;
         try {
             if (argv.scheme) {
