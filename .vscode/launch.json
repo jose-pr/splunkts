@@ -13,7 +13,7 @@
             ],
             "preLaunchTask": "build",
             "cwd": "${workspaceFolder}\\packages\\modularinputs",
-            "program": "${workspaceFolder}\\packages\\modularinputs\\lib\\index.js",
+            "program": "${workspaceFolder}\\packages\\modularinputs\\lib\\example\\example.js",
             "args": [
                 "--in",
                 "test/inputdefinition.xml",

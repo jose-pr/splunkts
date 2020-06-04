@@ -23,7 +23,7 @@ export async function main<T extends Stanza>(modularInputType: ModularInputConst
 
                 [stream_out, stream_error].forEach(function (s: any) {
                     if (s && s.isTTY && s._handle && s._handle.setBlocking) {
-                 //       s._handle.setBlocking(true);
+                        s._handle.setBlocking(true);
                     }
                 });
 
@@ -42,35 +42,6 @@ export async function main<T extends Stanza>(modularInputType: ModularInputConst
             .parseAndExit();
         exit(0);
     } catch (e) {
-        console.log(e)
         exit(1);
     }
 }
-class ExampleClass extends ModularInput<{ test: string[] }>{
-    static async create(logger: SplunkLogger): Promise<ExampleClass> {
-        return await new ExampleClass(logger);
-    }
-    getScheme(): Scheme<{ test: string[] }> {
-        return {
-            title: 'test',
-            endpoint: {
-                args: {
-                    arg: [
-                        {
-                            "@name": 'test',
-                            list_delimiter: ",",
-                            data_type: ArgumentType.dataTypeString
-                        }
-                    ]
-                }
-            }
-
-        }
-    }
-    async streamEvents(name: string, input: any, writer: SendEvent): Promise<void> {
-        this.logger.INFO('name', 'test')
-        await writer(name, { data: '123' }, true)
-    }
-
-}
-main(ExampleClass)
